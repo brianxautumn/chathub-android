@@ -42,12 +42,14 @@ public class MessageUtil {
     private static MessageLoadListener sAdapterListener;
     private static FirebaseAuth sFirebaseAuth;
     public interface MessageLoadListener { public void onLoadComplete(); }
+    public static View.OnClickListener sMessageClickListener;
 
     public static void send(ChatMessage chatMessage) {
         sFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
     }
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
+
         public TextView messageTextView;
         public ImageView messageImageView;
         public TextView messengerTextView;
@@ -56,6 +58,8 @@ public class MessageUtil {
         public View messageLayout;
         public MessageViewHolder(View v) {
             super(v);
+            v.setOnClickListener(sMessageClickListener);
+
             messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
             messengerTextView = (TextView) itemView.findViewById(R.id.messengerTextView);
             messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
@@ -68,7 +72,10 @@ public class MessageUtil {
     public static FirebaseRecyclerAdapter getFirebaseAdapter(final Activity activity,
                                                              MessageLoadListener listener,
                                                              final LinearLayoutManager linearManager,
-                                                             final RecyclerView recyclerView) {
+                                                             final RecyclerView recyclerView,
+                                                             final View.OnClickListener messageClicklistener) {
+        sMessageClickListener = messageClicklistener;
+
         final SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(activity);
         sAdapterListener = listener;

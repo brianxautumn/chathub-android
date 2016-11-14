@@ -16,17 +16,24 @@
 package edu.sfsu.csc780.chathub.ui;
 
 import android.app.Activity;
+
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+
+
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -42,9 +49,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
@@ -78,6 +87,7 @@ public class MainActivity extends AppCompatActivity
     private static final double MAX_LINEAR_DIMENSION = 500.0;
     public static final String ANONYMOUS = "anonymous";
     private static final int REQUEST_PICK_IMAGE = 1;
+    static final int REQUEST_TAKE_PHOTO = 3;
     private String mUsername;
     private String mPhotoUrl;
     private SharedPreferences mSharedPreferences;
@@ -98,6 +108,7 @@ public class MainActivity extends AppCompatActivity
     private ImageButton mImageButton;
     private int mSavedTheme;
     private ImageButton mLocationButton;
+    private ImageButton mCameraButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +147,9 @@ public class MainActivity extends AppCompatActivity
         mFirebaseAdapter = MessageUtil.getFirebaseAdapter(this,
                 this,  /* MessageLoadListener */
                 mLinearLayoutManager,
-                mMessageRecyclerView);
+                mMessageRecyclerView,
+                mImageClickListener);
+
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
         mProgressBar.setVisibility(ProgressBar.INVISIBLE);
@@ -193,6 +206,21 @@ public class MainActivity extends AppCompatActivity
                 loadMap();
             }
         });
+
+        mCameraButton = (ImageButton) findViewById(R.id.cameraButton);
+        mCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchTakePhotoIntent();
+            }
+        });
+    }
+
+    private void dispatchTakePhotoIntent(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+        }
     }
 
     @Override
@@ -309,6 +337,21 @@ public class MainActivity extends AppCompatActivity
             if (DesignUtils.getPreferredTheme(this) != mSavedTheme) {
                 DesignUtils.applyColorfulTheme(this);
                 this.recreate();
+            }
+        } else if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK){
+
+            if (data != null) {
+
+                Bundle extras = data.getExtras();
+                if (extras != null){
+                    Log.d( "camera", "extras is not null");
+                    Bitmap bitmap = (Bitmap) extras.get("data");
+                    Bitmap resizedBitmap = scaleImage(bitmap);
+                    Uri uri  = savePhotoImage(resizedBitmap);
+                    createImageMessage(uri);
+
+                }
+
             }
         }
     }
@@ -441,4 +484,34 @@ public class MainActivity extends AppCompatActivity
         mLocationButton.setEnabled(false);
         loader.forceLoad();
     }
+
+    private View.OnClickListener mImageClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ImageView photoView = (ImageView) v.findViewById(R.id.messageImageView);
+            // Only show the larger view in dialog if there's a image for the message
+            if (photoView.getVisibility() == View.VISIBLE) {
+                Bitmap bitmap = ((GlideBitmapDrawable) photoView.getDrawable()).getBitmap();
+                showPhotoDialog(ImageDialogFragment.newInstance(bitmap));
+            }
+        }
+
+    };
+
+    void showPhotoDialog(DialogFragment dialogFragment) {
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction. We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        android.support.v4.app.Fragment prev =
+                getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) { ft.remove(prev); }
+        ft.addToBackStack(null);
+        dialogFragment.show(ft , "dialog");
+
+
+
+
+    }
+
 }
