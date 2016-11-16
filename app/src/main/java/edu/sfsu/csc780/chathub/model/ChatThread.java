@@ -7,19 +7,21 @@ import java.util.Date;
  */
 public class ChatThread {
     private String label;
-    private String name;
-    private String photoUrl;
+    private String key;
 
-    public long getTimestamp() {
-        return timestamp;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    private long timestamp;
-    public static final long NO_TIMESTAMP = -1;
-
-
+    public String getKey(){
+        return this.key;
+    }
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public ChatThread() {
+
     }
 
     public ChatThread(String label) {

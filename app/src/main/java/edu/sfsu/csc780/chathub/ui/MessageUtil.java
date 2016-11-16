@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +37,7 @@ import edu.sfsu.csc780.chathub.R;
 public class MessageUtil {
     private static final String LOG_TAG = MessageUtil.class.getSimpleName();
     public static final String MESSAGES_CHILD = "messages";
+    public static final String THREAD_KEY = "threads";
     private static DatabaseReference sFirebaseDatabaseReference =
             FirebaseDatabase.getInstance().getReference();
     private static FirebaseStorage sStorage = FirebaseStorage.getInstance();
@@ -45,7 +47,11 @@ public class MessageUtil {
     public static View.OnClickListener sMessageClickListener;
 
     public static void send(ChatMessage chatMessage) {
-        sFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
+        String threadId = chatMessage.getThreadId();
+        String messageRef = THREAD_KEY + "/" + threadId + "/messages";
+        Log.d("messagePushing" , threadId);
+        sFirebaseDatabaseReference.child(messageRef).push().setValue(chatMessage);
+        //sFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
     }
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -73,8 +79,10 @@ public class MessageUtil {
                                                              MessageLoadListener listener,
                                                              final LinearLayoutManager linearManager,
                                                              final RecyclerView recyclerView,
-                                                             final View.OnClickListener messageClicklistener) {
+                                                             final View.OnClickListener messageClicklistener,
+                                                             final String threadId) {
         sMessageClickListener = messageClicklistener;
+        String messageRef = THREAD_KEY + "/" + threadId + "/messages";
 
         final SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(activity);
@@ -84,7 +92,7 @@ public class MessageUtil {
                 ChatMessage.class,
                 R.layout.item_message,
                 MessageViewHolder.class,
-                sFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
+                sFirebaseDatabaseReference.child(messageRef)) {
             @Override
             protected void populateViewHolder(final MessageViewHolder viewHolder,
                                               ChatMessage chatMessage, int position) {

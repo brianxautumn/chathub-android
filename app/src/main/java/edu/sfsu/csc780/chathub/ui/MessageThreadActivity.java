@@ -1,6 +1,9 @@
 package edu.sfsu.csc780.chathub.ui;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,8 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +30,10 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private String mUsername;
+    private static final String TAG = "ThreadActivity";
+
+    static final int REQUEST_PUBLIC_THREAD = 1;
+    static final int REQUEST_PRIVATE_THREAD = 2;
 
 
     // Firebase instance variables
@@ -59,10 +69,36 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
         mFirebaseAdapter = ThreadUtil.getFirebaseAdapter(this,
                 this,  /* MessageLoadListener */
                 mLinearLayoutManager,
-                mMessageRecyclerView );
+                mMessageRecyclerView,
+                mThreadClickListener);
 
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: request=" + requestCode + ", result=" + resultCode);
+
+        if (requestCode == REQUEST_PUBLIC_THREAD && resultCode == Activity.RESULT_OK) {
+
+
+        }
+    }
+
+    private View.OnClickListener mThreadClickListener = new View.OnClickListener() {
+
+
+        @Override
+        public void onClick(View v) {
+            ThreadUtil.ThreadViewHolder threadViewHolder = (ThreadUtil.ThreadViewHolder) v.getTag();
+            //int position  =   mFirebaseAdapter.getAdapterPosition();
+            String threadKey = mFirebaseAdapter.getRef(threadViewHolder.getLayoutPosition()).getKey();
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            i.putExtra("THREAD", threadKey);
+            startActivityForResult(i, REQUEST_PUBLIC_THREAD);
+        }
+
+    };
 
     @Override
     public void onLoadComplete() {

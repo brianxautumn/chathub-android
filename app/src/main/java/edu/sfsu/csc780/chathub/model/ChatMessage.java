@@ -22,6 +22,11 @@ public class ChatMessage {
     private String text;
     private String name;
     private String photoUrl;
+    private String threadId;
+
+
+
+
 
     public long getTimestamp() {
         return timestamp;
@@ -73,5 +78,13 @@ public class ChatMessage {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public void setThreadId(String setThreadId) {
+        this.threadId = setThreadId;
+    }
+
+    public String getThreadId() {
+        return this.threadId;
     }
 }

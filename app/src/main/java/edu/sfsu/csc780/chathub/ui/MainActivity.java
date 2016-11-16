@@ -109,10 +109,20 @@ public class MainActivity extends AppCompatActivity
     private int mSavedTheme;
     private ImageButton mLocationButton;
     private ImageButton mCameraButton;
+    private String threadKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            threadKey = extras.getString("THREAD");
+            //The key argument here must match that used in the other activity
+        }
+
+        Log.d("ThreadData" , threadKey);
+
         DesignUtils.applyColorfulTheme(this);
         setContentView(R.layout.activity_main);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -148,9 +158,11 @@ public class MainActivity extends AppCompatActivity
                 this,  /* MessageLoadListener */
                 mLinearLayoutManager,
                 mMessageRecyclerView,
-                mImageClickListener);
+                mImageClickListener,
+                threadKey);
 
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+
 
         mProgressBar.setVisibility(ProgressBar.INVISIBLE);
 
@@ -182,9 +194,12 @@ public class MainActivity extends AppCompatActivity
                 // Send messages on click.
                 mMessageRecyclerView.scrollToPosition(0);
                 ChatMessage chatMessage = new
-                        ChatMessage(mMessageEditText.getText().toString(),
+                        ChatMessage(
+                        mMessageEditText.getText().toString(),
                         mUsername,
-                        mPhotoUrl);
+                        mPhotoUrl
+                        );
+                chatMessage.setThreadId(threadKey);
                 MessageUtil.send(chatMessage);
                 mMessageEditText.setText("");
             }
@@ -377,7 +392,10 @@ public class MainActivity extends AppCompatActivity
                 ChatMessage chatMessage = new
                         ChatMessage(mMessageEditText.getText().toString(),
                         mUsername,
-                        mPhotoUrl, imageReference.toString());
+                        mPhotoUrl,
+                        imageReference.toString()
+                        );
+                chatMessage.setThreadId(threadKey);
                 MessageUtil.send(chatMessage);
                 mMessageEditText.setText("");
             }

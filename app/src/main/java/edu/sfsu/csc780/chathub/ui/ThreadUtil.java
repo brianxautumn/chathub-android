@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -48,19 +49,27 @@ public class ThreadUtil {
     public interface ThreadLoadListener { public void onLoadComplete(); }
     private static final String TAG = "Thread";
 
-    public static class ThreadViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static View.OnClickListener sThreadClickListener;
+
+
+    public static class ThreadViewHolder extends RecyclerView.ViewHolder{
         public TextView messageTextView;
         public View threadLayout;
+        public String threadKey;
         public ThreadViewHolder(View v) {
             super(v);
-            v.setOnClickListener(this);
+            v.setOnClickListener(sThreadClickListener);
+            v.setTag(this);
             messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
             threadLayout = (View)  itemView.findViewById(R.id.threadLayout);
         }
 
-        @Override
-        public void onClick(View view) {
-            Log.d(TAG, "Item was clicked");
+        public String getThreadKey(){
+            return this.threadKey;
+        }
+
+        public void setThreadKey(String threadKey){
+            this.threadKey = threadKey;
         }
 
     }
@@ -69,7 +78,10 @@ public class ThreadUtil {
     public static FirebaseRecyclerAdapter getFirebaseAdapter(final Activity activity,
                                                              ThreadUtil.ThreadLoadListener listener,
                                                              final LinearLayoutManager linearManager,
-                                                             final RecyclerView recyclerView) {
+                                                             final RecyclerView recyclerView,
+                                                             final View.OnClickListener threadClicklistener) {
+
+        sThreadClickListener = threadClicklistener;
 
         final SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(activity);
@@ -78,7 +90,7 @@ public class ThreadUtil {
         final FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<ChatThread,
                 ThreadViewHolder>(
                 ChatThread.class,
-                R.layout.item_message,
+                R.layout.thread_layout,
                 ThreadViewHolder.class,
                 sFirebaseDatabaseReference.child(THREADS_CHILD)) {
 
@@ -87,8 +99,11 @@ public class ThreadUtil {
                                               ChatThread chatThread, int position) {
 
                 sAdapterListener.onLoadComplete();
-
+                //final String key = this.getRef(position).getKey();
+                //Log.d("FirebaseTest" , key);
                 viewHolder.messageTextView.setText(chatThread.getLabel());
+                viewHolder.setThreadKey(this.getRef(position).getKey());
+
 
             }
 
@@ -98,6 +113,7 @@ public class ThreadUtil {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
+
             }
         });
 
