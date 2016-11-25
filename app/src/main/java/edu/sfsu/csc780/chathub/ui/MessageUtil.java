@@ -23,8 +23,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -45,12 +48,35 @@ public class MessageUtil {
     private static FirebaseAuth sFirebaseAuth;
     public interface MessageLoadListener { public void onLoadComplete(); }
     public static View.OnClickListener sMessageClickListener;
+    public static View.OnLongClickListener sMessageLongClickListener;
 
-    public static void send(ChatMessage chatMessage) {
-        String threadId = chatMessage.getThreadId();
-        String messageRef = THREAD_KEY + "/" + threadId + "/messages";
+    public static void send(final ChatMessage chatMessage) {
+
+        final String threadId = chatMessage.getThreadId();
+        //final int messageCount = 0;
+        final String messageRef = THREAD_KEY + "/" + threadId + "/messages";
         Log.d("messagePushing" , threadId);
-        sFirebaseDatabaseReference.child(messageRef).push().setValue(chatMessage);
+        sFirebaseDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if(snapshot.hasChild(THREAD_KEY + "/" + threadId + "/count")){
+                    int messageCount = snapshot.child( THREAD_KEY + "/" + threadId + "/count" ).getValue(Integer.class);
+                    Log.d(LOG_TAG, "threadcount was " + messageCount);
+                    sFirebaseDatabaseReference.child(THREAD_KEY + "/" + threadId + "/count").setValue(messageCount+1);
+                }else{
+                    sFirebaseDatabaseReference.child(THREAD_KEY + "/" + threadId + "/count").setValue(1);
+                }
+
+                sFirebaseDatabaseReference.child(messageRef).push().setValue(chatMessage);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //sFirebaseDatabaseReference.child(messageRef).push().setValue(chatMessage);
         //sFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
     }
 
@@ -65,6 +91,7 @@ public class MessageUtil {
         public MessageViewHolder(View v) {
             super(v);
             v.setOnClickListener(sMessageClickListener);
+
 
             messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
             messengerTextView = (TextView) itemView.findViewById(R.id.messengerTextView);
@@ -175,6 +202,7 @@ public class MessageUtil {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
+                Log.d(LOG_TAG, "Item was inserted");
                 int messageCount = adapter.getItemCount();
                 int lastVisiblePosition = linearManager.findLastCompletelyVisibleItemPosition();
                 if (lastVisiblePosition == -1 ||

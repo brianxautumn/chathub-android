@@ -81,7 +81,6 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
 
         if (requestCode == REQUEST_PUBLIC_THREAD && resultCode == Activity.RESULT_OK) {
 
-
         }
     }
 

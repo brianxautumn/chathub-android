@@ -98,13 +98,12 @@ public class ThreadUtil {
             protected void populateViewHolder(final ThreadViewHolder viewHolder,
                                               ChatThread chatThread, int position) {
 
-                sAdapterListener.onLoadComplete();
+
                 //final String key = this.getRef(position).getKey();
                 //Log.d("FirebaseTest" , key);
                 viewHolder.messageTextView.setText(chatThread.getLabel());
                 viewHolder.setThreadKey(this.getRef(position).getKey());
-
-
+                sAdapterListener.onLoadComplete();
             }
 
         };

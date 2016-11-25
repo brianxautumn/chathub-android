@@ -152,6 +152,10 @@ public class MainActivity extends AppCompatActivity
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.messageRecyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
+        //mLinearLayoutManager.setReverseLayout(true);
+
+        //Log.d(TAG, "Layout reverse is : " + mLinearLayoutManager.getReverseLayout());
+        //Log.d(TAG, "Layout stack from end is : " + mLinearLayoutManager.getStackFromEnd());
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         mFirebaseAdapter = MessageUtil.getFirebaseAdapter(this,
@@ -160,6 +164,7 @@ public class MainActivity extends AppCompatActivity
                 mMessageRecyclerView,
                 mImageClickListener,
                 threadKey);
+
 
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 

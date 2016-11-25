@@ -6,15 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/threadLayout"
     android:layout_margin="4dp"
-    android:padding="4dp"
+    android:padding="20dp"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    android:background="#ffffff">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:backgroundTint="#f5f5f5">
 
 
             <TextView
@@ -24,12 +26,29 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 tools:text="This is a test"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/messageCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
     </LinearLayout>
+
+    <ViewAnimator
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewAnimator"
+        android:layout_gravity="right" />
+
+
 
 
 </LinearLayout>

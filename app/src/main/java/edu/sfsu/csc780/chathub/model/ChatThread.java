@@ -8,6 +8,7 @@ import java.util.Date;
 public class ChatThread {
     private String label;
     private String key;
+    private String messageCount;
 
     public void setKey(String key) {
         this.key = key;
@@ -30,6 +31,14 @@ public class ChatThread {
 
     public String getLabel(){
         return this.label;
+    }
+
+    public void setMessageCount(String count){
+        this.messageCount = count;
+    }
+
+    public String getMessageCount(){
+        return this.messageCount;
     }
 
 }
