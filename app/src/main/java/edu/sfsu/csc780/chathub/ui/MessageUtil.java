@@ -88,9 +88,16 @@ public class MessageUtil {
         public CircleImageView messengerImageView;
         public TextView timestampTextView;
         public View messageLayout;
+        public String userUid;
+        //public View view;
+
+
         public MessageViewHolder(View v) {
             super(v);
+            //this.view = v;
             v.setOnClickListener(sMessageClickListener);
+            v.setOnLongClickListener(sMessageLongClickListener);
+            //v.setTag(0 , userUid);
 
 
             messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
@@ -100,6 +107,17 @@ public class MessageUtil {
             timestampTextView = (TextView) itemView.findViewById(R.id.timestampTextView);
             messageLayout = (View) itemView.findViewById(R.id.messageLayout);
         }
+
+    }
+
+    public static class MessageMeta{
+        String name;
+        String uid;
+
+        public MessageMeta(String name, String uid){
+            this.name = name;
+            this.uid = uid;
+        }
     }
 
     public static FirebaseRecyclerAdapter getFirebaseAdapter(final Activity activity,
@@ -107,8 +125,10 @@ public class MessageUtil {
                                                              final LinearLayoutManager linearManager,
                                                              final RecyclerView recyclerView,
                                                              final View.OnClickListener messageClicklistener,
+                                                             final View.OnLongClickListener messageLongClickListener,
                                                              final String threadId) {
         sMessageClickListener = messageClicklistener;
+        sMessageLongClickListener = messageLongClickListener;
         String messageRef = THREAD_KEY + "/" + threadId + "/messages";
 
         final SharedPreferences preferences =
@@ -126,6 +146,10 @@ public class MessageUtil {
                 sAdapterListener.onLoadComplete();
                 viewHolder.messageTextView.setText(chatMessage.getText());
                 viewHolder.messengerTextView.setText(chatMessage.getName());
+                viewHolder.messageLayout.setTag(new MessageMeta(chatMessage.getName(), chatMessage.getUid()));
+
+                //viewHolder.setUserUid(chatMessage.getUid());
+                //viewHolder.setName(chatMessage.getText());
                 if (chatMessage.getPhotoUrl() == null) {
                     viewHolder.messengerImageView
                             .setImageDrawable(ContextCompat

@@ -18,6 +18,8 @@ package edu.sfsu.csc780.chathub.ui;
 import android.app.Activity;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity
     private ImageButton mLocationButton;
     private ImageButton mCameraButton;
     private String threadKey;
+    private String mUserUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,8 @@ public class MainActivity extends AppCompatActivity
         //Initialize Auth
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        mUserUid = mUser.getUid();
+
         if (mUser == null) {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
@@ -163,6 +168,7 @@ public class MainActivity extends AppCompatActivity
                 mLinearLayoutManager,
                 mMessageRecyclerView,
                 mImageClickListener,
+                mLongClickListener,
                 threadKey);
 
 
@@ -205,6 +211,7 @@ public class MainActivity extends AppCompatActivity
                         mPhotoUrl
                         );
                 chatMessage.setThreadId(threadKey);
+                chatMessage.setUid(mUserUid);
                 MessageUtil.send(chatMessage);
                 mMessageEditText.setText("");
             }
@@ -401,6 +408,7 @@ public class MainActivity extends AppCompatActivity
                         imageReference.toString()
                         );
                 chatMessage.setThreadId(threadKey);
+                chatMessage.setUid(mUserUid);
                 MessageUtil.send(chatMessage);
                 mMessageEditText.setText("");
             }
@@ -520,6 +528,41 @@ public class MainActivity extends AppCompatActivity
         }
 
     };
+
+    private View.OnLongClickListener mLongClickListener = new View.OnLongClickListener() {
+
+
+        @Override
+        public boolean onLongClick(View view) {
+            MessageUtil.MessageMeta messageMeta  = (MessageUtil.MessageMeta) view.findViewById(R.id.messageLayout).getTag();
+            String name =  messageMeta.name;
+            String uid = messageMeta.uid;
+            showContactAddDialog(name, uid);
+            return false;
+        }
+
+    };
+
+    void showContactAddDialog(String name, String uid){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Add " + name + " to contacts?")
+
+                .setCancelable(false)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                })
+
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     void showPhotoDialog(DialogFragment dialogFragment) {
         // DialogFragment.show() will take care of adding the fragment
