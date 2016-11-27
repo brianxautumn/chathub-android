@@ -80,8 +80,8 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 String txt;
                 switch (menuItem.getItemId()) {
-                    case R.id.item_1:
-                        txt = "Item #1 Selected";
+                    case R.id.contacts:
+                        txt = "Contacts Selected";
                         break;
 
                     default:
