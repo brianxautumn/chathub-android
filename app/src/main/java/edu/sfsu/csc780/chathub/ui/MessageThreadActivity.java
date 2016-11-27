@@ -92,8 +92,11 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
             ThreadUtil.ThreadViewHolder threadViewHolder = (ThreadUtil.ThreadViewHolder) v.getTag();
             //int position  =   mFirebaseAdapter.getAdapterPosition();
             String threadKey = mFirebaseAdapter.getRef(threadViewHolder.getLayoutPosition()).getKey();
+            //String threadLabel = mFirebaseAdapter.getRef(threadViewHolder.getLayoutPosition()).getRoot();
+            String threadLabel = (String) threadViewHolder.messageTextView.getText();
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
             i.putExtra("THREAD", threadKey);
+            i.putExtra("LABEL", threadLabel);
             startActivityForResult(i, REQUEST_PUBLIC_THREAD);
         }
 

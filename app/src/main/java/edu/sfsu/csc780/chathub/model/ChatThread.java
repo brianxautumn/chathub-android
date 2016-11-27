@@ -17,6 +17,7 @@ public class ChatThread {
     public String getKey(){
         return this.key;
     }
+
     public void setLabel(String label) {
         this.label = label;
     }

@@ -19,6 +19,7 @@ import android.app.Activity;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -64,6 +65,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -76,6 +82,7 @@ import java.util.Date;
 
 import edu.sfsu.csc780.chathub.R;
 import edu.sfsu.csc780.chathub.model.ChatMessage;
+import edu.sfsu.csc780.chathub.model.User;
 
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener,
@@ -107,12 +114,16 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseRecyclerAdapter<ChatMessage, MessageUtil.MessageViewHolder>
             mFirebaseAdapter;
+    private  DatabaseReference mFirebaseDatabaseReference;
+
     private ImageButton mImageButton;
     private int mSavedTheme;
     private ImageButton mLocationButton;
     private ImageButton mCameraButton;
     private String threadKey;
+    private String threadLabel;
     private String mUserUid;
+    private DataSnapshot contactSnapshot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +132,11 @@ public class MainActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             threadKey = extras.getString("THREAD");
+            threadLabel = extras.getString("LABEL");
             //The key argument here must match that used in the other activity
         }
+
+        setTitle(threadLabel);
 
         Log.d("ThreadData" , threadKey);
 
@@ -172,6 +186,7 @@ public class MainActivity extends AppCompatActivity
                 threadKey);
 
 
+
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
 
@@ -212,6 +227,7 @@ public class MainActivity extends AppCompatActivity
                         );
                 chatMessage.setThreadId(threadKey);
                 chatMessage.setUid(mUserUid);
+                chatMessage.setEmail(mUser.getEmail());
                 MessageUtil.send(chatMessage);
                 mMessageEditText.setText("");
             }
@@ -239,6 +255,26 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 dispatchTakePhotoIntent();
+            }
+        });
+
+
+
+        //Now set up a listener for the user's contacts
+        mFirebaseDatabaseReference =
+                FirebaseDatabase.getInstance().getReference();
+
+        final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        mFirebaseDatabaseReference.child("users").child(firebaseUser.getUid()).child("contacts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                contactSnapshot = snapshot;
+                Log.d(TAG, "Added info");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
@@ -537,20 +573,52 @@ public class MainActivity extends AppCompatActivity
             MessageUtil.MessageMeta messageMeta  = (MessageUtil.MessageMeta) view.findViewById(R.id.messageLayout).getTag();
             String name =  messageMeta.name;
             String uid = messageMeta.uid;
-            showContactAddDialog(name, uid);
+            String email = messageMeta.email;
+            final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+            Log.d(TAG, uid);
+            Log.d(TAG, firebaseUser.getUid());
+            if(uid.equals(firebaseUser.getUid())){
+                showSelfDetails(name);
+            }else{
+                showContactAddDialog(name, uid, email);
+            }
+
             return false;
         }
 
     };
 
-    void showContactAddDialog(String name, String uid){
+    void showSelfDetails(final String name){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(name + " (me)")
+
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    void showContactAddDialog(final String name, final String uid, final String email){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Add " + name + " to contacts?")
 
                 .setCancelable(false)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        User newContact = new User(name, email);
+                        mFirebaseDatabaseReference.child("users").child(mUser.getUid()).child("contacts").child(uid).setValue(newContact);
 
+                        Context context = getApplicationContext();
+                        CharSequence text = "Added " + name + " to contacts.";
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     }
                 })
 

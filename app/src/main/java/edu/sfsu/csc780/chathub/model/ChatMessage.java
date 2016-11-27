@@ -24,6 +24,7 @@ public class ChatMessage {
     private String photoUrl;
     private String threadId;
     private String uid;
+    private String email;
 
     public long getTimestamp() {
         return timestamp;
@@ -92,6 +93,14 @@ public class ChatMessage {
     public void setUid(String uid){
 
         this.uid = uid;
+    }
+
+    public void setEmail(String email){
+        this.email = email;
+    }
+
+    public String getEmail(){
+        return this.email;
     }
 
 }
