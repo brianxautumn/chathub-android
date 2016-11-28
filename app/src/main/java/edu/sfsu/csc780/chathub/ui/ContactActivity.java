@@ -1,5 +1,7 @@
 package edu.sfsu.csc780.chathub.ui;
 
+import android.content.Intent;
+import android.os.Debug;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +28,8 @@ public class ContactActivity extends AppCompatActivity implements ContactUtil.Th
     private LinearLayoutManager mLinearLayoutManager;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     private static String TAG = "ContactActivity";
+
+    private static int REQUEST_CONTACT_DETAIL = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,14 @@ public class ContactActivity extends AppCompatActivity implements ContactUtil.Th
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "clicked");
+            ContactUtil.ContactViewHolder contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
+            //int position  =   mFirebaseAdapter.getAdapterPosition();
+            String uid = mFirebaseAdapter.getRef(contactViewHolder.getLayoutPosition()).getKey();
+            Log.d(TAG, uid);
+            Intent i = new Intent(getApplicationContext(), ContactDetailActivity.class);
+            i.putExtra("UID", uid);
+
+            startActivityForResult(i, REQUEST_CONTACT_DETAIL);
         }
 
     };

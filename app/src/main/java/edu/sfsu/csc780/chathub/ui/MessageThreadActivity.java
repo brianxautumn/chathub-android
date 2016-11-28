@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -18,19 +19,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import edu.sfsu.csc780.chathub.R;
 import edu.sfsu.csc780.chathub.model.ChatMessage;
 import edu.sfsu.csc780.chathub.model.ChatThread;
+import edu.sfsu.csc780.chathub.ui.SignInActivity;
 
-public class MessageThreadActivity extends AppCompatActivity implements ThreadUtil.ThreadLoadListener {
+public class MessageThreadActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ThreadUtil.ThreadLoadListener {
     private RecyclerView mThreadRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView mMessageRecyclerView;
@@ -40,15 +48,18 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
     private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     private static final String TAG = "ThreadActivity";
     private Toolbar mToolBar;
-
+    public static final String ANONYMOUS = "anonymous";
     static final int REQUEST_PUBLIC_THREAD = 1;
     static final int REQUEST_PRIVATE_THREAD = 2;
     static final int REQUEST_CONTACTS = 3;
-
+    private GoogleApiClient mGoogleApiClient;
 
     // Firebase instance variables
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+
+    public ImageView mMyImage;
+    public TextView mMyName;
 
     private FirebaseRecyclerAdapter<ChatThread, ThreadUtil.ThreadViewHolder>
             mFirebaseAdapter;
@@ -57,6 +68,23 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_thread);
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
+        if (mUser == null) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
+        } else {
+            mUsername = mUser.getDisplayName();
+
+        }
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerRoot);
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
@@ -70,6 +98,12 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
                 R.string.drawer_close);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+        NavigationView mNavigationView = (NavigationView) findViewById(R.id.navView);
+        View hView =  mNavigationView.getHeaderView(0);
+        mMyImage = (ImageView) hView.findViewById(R.id.myImage);
+        mMyName = (TextView) hView.findViewById(R.id.myName);
+        mMyName.setText(mUser.getDisplayName());
+        Picasso.with(getApplicationContext()).load(mUser.getPhotoUrl()).into(mMyImage);
 
 
         NavigationView nv = (NavigationView) findViewById(R.id.navView);
@@ -80,12 +114,21 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 String txt;
+                Intent i;
                 switch (menuItem.getItemId()) {
                     case R.id.contacts:
                         txt = "Contacts Selected";
-                        Intent i = new Intent(getApplicationContext(), ContactActivity.class);
+                        i = new Intent(getApplicationContext(), ContactActivity.class);
                         startActivityForResult(i, REQUEST_CONTACTS);
                         break;
+                    case R.id.logOut:
+                        //txt = "Contacts Selected";
+                        mAuth.signOut();
+                        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                        mUsername = ANONYMOUS;
+                        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                        return true;
+                        //break;
 
                     default:
                         txt = "Invalid Item Selected";
@@ -97,17 +140,7 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
         });
 
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
 
-        if (mUser == null) {
-            startActivity(new Intent(this, SignInActivity.class));
-            finish();
-            return;
-        } else {
-            mUsername = mUser.getDisplayName();
-
-        }
 
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.threadRecyclerView);
 
@@ -180,5 +213,13 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
     @Override
     public void onLoadComplete() {
 
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 }

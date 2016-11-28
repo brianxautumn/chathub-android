@@ -19,7 +19,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB6XaN4ppebpP9b5rb3mdFQuXN0AtHJHYg" />
 
-        <activity android:name=".ui.MainActivity"></activity>
+        <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.SignInActivity" />
         <activity android:name=".ui.PreferencesActivity" />
         <activity android:name=".ui.MessageThreadActivity">
@@ -29,7 +29,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ContactActivity"></activity>
+        <activity android:name=".ui.ContactActivity" />
+        <activity android:name=".ui.ContactDetailActivity"></activity>
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ public class User {
     private String name;
     private String uid;
     private String email;
+    private String photoUrl;
 
     private HashMap<String, User> contacts;
 
@@ -19,6 +20,16 @@ public class User {
     public User(String name, String email){
         this.name = name;
         this.email = email;
+    }
+
+    public User(String name, String email, String photoUrl){
+        this.name = name;
+        this.email = email;
+        this.photoUrl = photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl){
+        this.photoUrl = photoUrl;
     }
 
     public String getName(){
@@ -32,5 +43,7 @@ public class User {
     public String getEmail(){
         return this.email;
     }
+
+    public String getPhotoUrl(){return this.photoUrl;}
 
 }

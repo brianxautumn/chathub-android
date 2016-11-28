@@ -148,8 +148,11 @@ public class SignInActivity extends AppCompatActivity implements
                             mAuth = FirebaseAuth.getInstance();
                             final FirebaseUser firebaseUser = mAuth.getCurrentUser();
                             User user = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail());
+
+                            //Update our user table with info from google if the changed anything or if new user
                             mFirebaseDatabaseReference.child("users").child(firebaseUser.getUid()).child("name").setValue(firebaseUser.getDisplayName());
                             mFirebaseDatabaseReference.child("users").child(firebaseUser.getUid()).child("email").setValue(firebaseUser.getEmail());
+                            mFirebaseDatabaseReference.child("users").child(firebaseUser.getUid()).child("photoUrl").setValue(firebaseUser.getPhotoUrl().toString());
                             startActivity(new Intent(SignInActivity.this, MainActivity.class));
                             finish();
 
