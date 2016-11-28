@@ -17,5 +17,8 @@
     <string name="deleteContact">Delete Contact</string>
     <string name="email">Email</string>
     <string name="logOut">Log Out</string>
+    <string name="preferences">Preferences</string>
+    <string name="inbox">Inbox</string>
+    <string name="account">Account</string>
 
 </resources>

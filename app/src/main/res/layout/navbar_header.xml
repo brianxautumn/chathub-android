@@ -4,14 +4,23 @@
      The header is simply a LinearLayout with a TextView widget displaying the
      header title. The header is highly customizable and can make your app unique.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="bottom"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="178dp"
+    android:orientation="vertical"
+    android:weightSum="1"
     android:theme="@style/ThemeOverlay.AppCompat.Light"
-    android:background="@color/colorPrimaryDark"
+    android:background="@drawable/drawer_bg_2"
+
     android:paddingLeft="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/myImage"
@@ -27,4 +36,14 @@
         android:textColor="@android:color/white"
         android:paddingBottom="10dp"></TextView>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/myEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+            android:textColor="@android:color/white"
+            android:paddingBottom="10dp"></TextView>
+
+    </LinearLayout>
+
+</RelativeLayout>

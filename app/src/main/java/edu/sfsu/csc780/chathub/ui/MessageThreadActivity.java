@@ -60,6 +60,7 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
 
     public ImageView mMyImage;
     public TextView mMyName;
+    public TextView mMyEmail;
 
     private FirebaseRecyclerAdapter<ChatThread, ThreadUtil.ThreadViewHolder>
             mFirebaseAdapter;
@@ -102,7 +103,9 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
         View hView =  mNavigationView.getHeaderView(0);
         mMyImage = (ImageView) hView.findViewById(R.id.myImage);
         mMyName = (TextView) hView.findViewById(R.id.myName);
+        mMyEmail = (TextView) hView.findViewById(R.id.myEmail);
         mMyName.setText(mUser.getDisplayName());
+        mMyEmail.setText(mUser.getEmail());
         Picasso.with(getApplicationContext()).load(mUser.getPhotoUrl()).into(mMyImage);
 
 
@@ -157,13 +160,7 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /**
-         * Inflate the menu; this adds items to the action bar if it is present. */
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -8,6 +8,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:id="@+id/groupMain"
         android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/inbox"
+            android:icon="@drawable/ic_inbox_black_24px"
+            android:title="@string/inbox" ></item>
+
         <item
             android:id="@+id/contacts"
             android:icon="@drawable/ic_contacts_black_24px"
@@ -15,17 +21,28 @@
 
 
 
+
+
+
+
     </group>
 
-    <group
-        android:id="@+id/groupUser"
-        android:checkableBehavior="single">
+    <item android:title="@string/account">
 
+        <menu>
+            <item
 
-        <item
+                android:id="@+id/preferences"
+                android:icon="@drawable/ic_settings_black_24px"
+                android:title="@string/preferences" ></item>
 
-            android:id="@+id/logOut"
-            android:icon="@drawable/ic_contacts_black_24px"
-            android:title="@string/logOut" ></item>
-    </group>
+            <item
+
+                android:id="@+id/logOut"
+                android:icon="@drawable/ic_power_settings_new_black_24px"
+                android:title="@string/logOut" ></item>
+        </menu>
+
+    </item>
+
 </menu>
