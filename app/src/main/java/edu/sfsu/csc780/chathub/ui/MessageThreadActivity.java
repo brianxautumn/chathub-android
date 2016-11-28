@@ -43,6 +43,7 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
 
     static final int REQUEST_PUBLIC_THREAD = 1;
     static final int REQUEST_PRIVATE_THREAD = 2;
+    static final int REQUEST_CONTACTS = 3;
 
 
     // Firebase instance variables
@@ -82,12 +83,14 @@ public class MessageThreadActivity extends AppCompatActivity implements ThreadUt
                 switch (menuItem.getItemId()) {
                     case R.id.contacts:
                         txt = "Contacts Selected";
+                        Intent i = new Intent(getApplicationContext(), ContactActivity.class);
+                        startActivityForResult(i, REQUEST_CONTACTS);
                         break;
 
                     default:
                         txt = "Invalid Item Selected";
                 }
-                Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_LONG).show();
                 mDrawerLayout.closeDrawers();
                 return true;
             }

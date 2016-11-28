@@ -19,20 +19,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB6XaN4ppebpP9b5rb3mdFQuXN0AtHJHYg" />
 
-        <activity android:name=".ui.MainActivity">
-
-        </activity>
+        <activity android:name=".ui.MainActivity"></activity>
         <activity android:name=".ui.SignInActivity" />
         <activity android:name=".ui.PreferencesActivity" />
-
-        <activity
-            android:name=".ui.MessageThreadActivity">
+        <activity android:name=".ui.MessageThreadActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.ContactActivity"></activity>
     </application>
 
 </manifest>
