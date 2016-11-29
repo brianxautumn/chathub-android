@@ -52,6 +52,7 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
     static final int REQUEST_PUBLIC_THREAD = 1;
     static final int REQUEST_PRIVATE_THREAD = 2;
     static final int REQUEST_CONTACTS = 3;
+    static final int REQUEST_INBOX = 4;
     public static final int REQUEST_PREFERENCES = 4;
     private GoogleApiClient mGoogleApiClient;
     private int mSavedTheme;
@@ -138,6 +139,10 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
                         mSavedTheme = DesignUtils.getPreferredTheme(getApplicationContext());
                         i = new Intent(getApplicationContext(), PreferencesActivity.class);
                         startActivityForResult(i, REQUEST_PREFERENCES);
+                        break;
+                    case R.id.inbox:
+                        i = new Intent(getApplicationContext(), InboxActivity.class);
+                        startActivityForResult(i, REQUEST_INBOX);
                         break;
                     default:
                         txt = "Invalid Item Selected";

@@ -30,7 +30,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.ContactActivity" />
-        <activity android:name=".ui.ContactDetailActivity"></activity>
+        <activity android:name=".ui.ContactDetailActivity" />
+        <activity android:name=".ui.InboxActivity"></activity>
     </application>
 
 </manifest>

@@ -9,6 +9,8 @@ public class PrivateThread {
     String user2;
     String name1;
     String name2;
+    User contact1;
+    User contact2;
 
     public PrivateThread(){
 
@@ -19,6 +21,11 @@ public class PrivateThread {
         this.user2 = user2;
         this.name1 = name1;
         this.name2 = name2;
+    }
+
+    //Temporary
+    public String getContactName(){
+        return this.name1;
     }
 
 }
