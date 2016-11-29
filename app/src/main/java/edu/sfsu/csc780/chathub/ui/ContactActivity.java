@@ -78,14 +78,21 @@ public class ContactActivity extends AppCompatActivity implements ContactUtil.Th
 
         @Override
         public void onClick(View v) {
-            ContactUtil.ContactViewHolder contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
-            //int position  =   mFirebaseAdapter.getAdapterPosition();
-            String uid = mFirebaseAdapter.getRef(contactViewHolder.getLayoutPosition()).getKey();
-            Log.d(TAG, uid);
-            Intent i = new Intent(getApplicationContext(), ContactDetailActivity.class);
-            i.putExtra("UID", uid);
+            switch (v.getId()) {
+                case R.id.contactDetails:
+                    ContactUtil.ContactViewHolder contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
+                    //int position  =   mFirebaseAdapter.getAdapterPosition();
+                    String uid = mFirebaseAdapter.getRef(contactViewHolder.getLayoutPosition()).getKey();
+                    Log.d(TAG, uid);
+                    Intent i = new Intent(getApplicationContext(), ContactDetailActivity.class);
+                    i.putExtra("UID", uid);
 
-            startActivityForResult(i, REQUEST_CONTACT_DETAIL);
+                    startActivityForResult(i, REQUEST_CONTACT_DETAIL);
+                    break;
+                default:
+                    Log.d(TAG, "Unrecognized click");
+                    break;
+            }
         }
 
     };

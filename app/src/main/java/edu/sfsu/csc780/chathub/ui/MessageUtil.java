@@ -80,6 +80,16 @@ public class MessageUtil {
         //sFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
     }
 
+    public static void sendPrivate(final ChatMessage chatMessage) {
+
+        final String threadId = chatMessage.getThreadId();
+        //final int messageCount = 0;
+
+        Log.d("messagePushing" , threadId);
+        sFirebaseDatabaseReference.child("private-messages").child(threadId).child("messages").push().setValue(chatMessage);
+        //sFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
+    }
+
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
 
         public TextView messageTextView;
@@ -129,10 +139,18 @@ public class MessageUtil {
                                                              final RecyclerView recyclerView,
                                                              final View.OnClickListener messageClicklistener,
                                                              final View.OnLongClickListener messageLongClickListener,
-                                                             final String threadId) {
+                                                             final String threadId,
+                                                             final boolean isPrivate) {
         sMessageClickListener = messageClicklistener;
         sMessageLongClickListener = messageLongClickListener;
-        String messageRef = THREAD_KEY + "/" + threadId + "/messages";
+        String messageRef = null;
+        if(isPrivate){
+            messageRef = "private-messages/" + threadId + "/messages";
+
+        }else{
+            messageRef = THREAD_KEY + "/" + threadId + "/messages";
+        }
+
 
         final SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(activity);

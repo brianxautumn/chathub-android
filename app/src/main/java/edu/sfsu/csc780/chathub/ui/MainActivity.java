@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity
     public static final String ANONYMOUS = "anonymous";
     private static final int REQUEST_PICK_IMAGE = 1;
     static final int REQUEST_TAKE_PHOTO = 3;
+    static final int PRIVATE = 2;
     private String mUsername;
     private String mPhotoUrl;
     private SharedPreferences mSharedPreferences;
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayoutManager mLinearLayoutManager;
     private ProgressBar mProgressBar;
     private EditText mMessageEditText;
+    private boolean isPrivate = false;
 
     // Firebase instance variables
     private FirebaseAuth mAuth;
@@ -133,12 +135,13 @@ public class MainActivity extends AppCompatActivity
         if (extras != null) {
             threadKey = extras.getString("THREAD");
             threadLabel = extras.getString("LABEL");
+            isPrivate = extras.getBoolean("MODE");
             //The key argument here must match that used in the other activity
         }
 
         setTitle(threadLabel);
 
-        Log.d("ThreadData" , threadKey);
+        Log.d(TAG , "MODE IS : " + isPrivate + "");
 
         DesignUtils.applyColorfulTheme(this);
         setContentView(R.layout.activity_main);
@@ -177,13 +180,15 @@ public class MainActivity extends AppCompatActivity
         //Log.d(TAG, "Layout stack from end is : " + mLinearLayoutManager.getStackFromEnd());
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        mFirebaseAdapter = MessageUtil.getFirebaseAdapter(this,
-                this,  /* MessageLoadListener */
-                mLinearLayoutManager,
-                mMessageRecyclerView,
-                mImageClickListener,
-                mLongClickListener,
-                threadKey);
+
+            mFirebaseAdapter = MessageUtil.getFirebaseAdapter(this,
+                    this,  /* MessageLoadListener */
+                    mLinearLayoutManager,
+                    mMessageRecyclerView,
+                    mImageClickListener,
+                    mLongClickListener,
+                    threadKey,
+                    isPrivate);
 
 
 
@@ -228,7 +233,10 @@ public class MainActivity extends AppCompatActivity
                 chatMessage.setThreadId(threadKey);
                 chatMessage.setUid(mUserUid);
                 chatMessage.setEmail(mUser.getEmail());
-                MessageUtil.send(chatMessage);
+                if(isPrivate)
+                    MessageUtil.sendPrivate(chatMessage);
+                else
+                    MessageUtil.send(chatMessage);
                 mMessageEditText.setText("");
             }
         });
@@ -445,7 +453,10 @@ public class MainActivity extends AppCompatActivity
                         );
                 chatMessage.setThreadId(threadKey);
                 chatMessage.setUid(mUserUid);
-                MessageUtil.send(chatMessage);
+                if(isPrivate)
+                    MessageUtil.sendPrivate(chatMessage);
+                else
+                    MessageUtil.send(chatMessage);
                 mMessageEditText.setText("");
             }
         });

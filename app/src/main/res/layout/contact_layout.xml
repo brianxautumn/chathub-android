@@ -6,46 +6,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/contactLayout"
     android:layout_margin="4dp"
-    android:padding="20dp"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    >
 
-    <LinearLayout
+    <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:backgroundTint="#f5f5f5">
+        android:id="@+id/swipeLayout">
 
-
-        <TextView
-            android:id="@+id/contactName"
+        <LinearLayout
+            android:tag="Bottom2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            tools:text="This is a test"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_margin="5dp" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/contactEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            tools:text="This is a test"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:layout_marginLeft="5dp"/>
+            <ImageView
+                android:id="@+id/startChat"
+                android:src="@drawable/ic_message_black_24px"
+                android:layout_width="70dp"
+                android:background="#4cd964"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:layout_height="match_parent" />
+            <ImageView
+                android:id="@+id/deleteContact"
+                android:src="@drawable/ic_delete_forever_black_24px"
+                android:layout_width="70dp"
+                android:background="@android:color/holo_red_light"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:id="@+id/contactDetails"
+            android:backgroundTint="#f5f5f5">
 
 
+            <TextView
+                android:id="@+id/contactName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                tools:text="This is a test"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_margin="5dp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/contactEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                tools:text="This is a test"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:layout_marginLeft="5dp" />
 
-    <ViewAnimator
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/viewAnimator"
-        android:layout_gravity="right" />
+            <Button
+                android:visibility="invisible"
+                android:id="@+id/click"
+                android:text="Click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
+
+        </LinearLayout>
+
+
+    </com.daimajia.swipe.SwipeLayout>
 </LinearLayout>

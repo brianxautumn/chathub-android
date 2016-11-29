@@ -1,5 +1,6 @@
 package edu.sfsu.csc780.chathub.ui;
 
+import android.content.Intent;
 import android.os.Debug;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,11 @@ public class ContactDetailActivity extends AppCompatActivity implements View.OnC
     private FirebaseUser firebaseContact;
     public static final String TAG = "ContactActivity";
     private DatabaseReference mFirebaseDatabaseReference;
+
+    static final int REQUEST_PUBLIC_THREAD = 1;
+    static final int REQUEST_PRIVATE_THREAD = 2;
+
+    static final int PRIVATE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +116,15 @@ public class ContactDetailActivity extends AppCompatActivity implements View.OnC
             case R.id.startChat:
                 Log.d(TAG, "Should start chat");
                 String name2 = (String) mContactName.getText();//TODO:: could be better, maybe use tag
-                PrivateChatUtil.setupPrivateChat(mAuth.getCurrentUser().getUid(), uid, mAuth.getCurrentUser().getDisplayName(), name2);
+                String threadKey = PrivateChatUtil.setupPrivateChat(mAuth.getCurrentUser().getUid(), uid, mAuth.getCurrentUser().getDisplayName(), name2);
+
+                //Now launch the chat activity
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                i.putExtra("THREAD", threadKey);
+                i.putExtra("LABEL", name2);
+                i.putExtra("MODE", true);
+                startActivityForResult(i, REQUEST_PRIVATE_THREAD);
+
                 break;
             default:
                 //do nothing

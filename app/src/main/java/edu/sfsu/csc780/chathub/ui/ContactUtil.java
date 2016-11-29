@@ -43,8 +43,15 @@ public class ContactUtil {
 
         public ContactViewHolder(View v) {
             super(v);
-            v.setOnClickListener(sContactClickListener);
-            v.setTag(this);
+            //v.setOnClickListener(sContactClickListener);
+            itemView.findViewById(R.id.contactDetails).setOnClickListener(sContactClickListener);
+            //v.setTag(this);
+            itemView.findViewById(R.id.contactDetails).setTag(this);
+            itemView.findViewById(R.id.deleteContact).setOnClickListener(sContactClickListener);
+            itemView.findViewById(R.id.startChat).setOnClickListener(sContactClickListener);
+            //layout.setShowMode(SwipeLayout.ShowMode.LayDown);
+            //layout.addDrag(SwipeLayout.DragEdge.Right, layout.findViewWithTag("Bottom2"));
+
             name = (TextView) itemView.findViewById(R.id.contactName);
             email = (TextView) itemView.findViewById(R.id.contactEmail) ;
             contactLayout = itemView.findViewById(R.id.contactLayout);
