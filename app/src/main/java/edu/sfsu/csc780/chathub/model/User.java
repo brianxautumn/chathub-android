@@ -32,6 +32,10 @@ public class User {
         this.photoUrl = photoUrl;
     }
 
+    public void setUid(String uid){
+        this.uid = uid;
+    }
+
     public String getName(){
         return this.name;
     }

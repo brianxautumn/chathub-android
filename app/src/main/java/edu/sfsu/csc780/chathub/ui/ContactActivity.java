@@ -15,6 +15,8 @@ import android.view.View;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import edu.sfsu.csc780.chathub.R;
 
@@ -28,8 +30,11 @@ public class ContactActivity extends AppCompatActivity implements ContactUtil.Th
     private LinearLayoutManager mLinearLayoutManager;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     private static String TAG = "ContactActivity";
+    private static DatabaseReference mFirebaseDatabaseReference =
+            FirebaseDatabase.getInstance().getReference();
 
     private static int REQUEST_CONTACT_DETAIL = 0;
+    private int REQUEST_PRIVATE_THREAD = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,21 +78,42 @@ public class ContactActivity extends AppCompatActivity implements ContactUtil.Th
     }
 
 
+
     private View.OnClickListener mContactClickListener = new View.OnClickListener() {
 
 
         @Override
         public void onClick(View v) {
+            ContactUtil.ContactViewHolder contactViewHolder;
+            String uid;
+            Intent i;
             switch (v.getId()) {
                 case R.id.contactDetails:
-                    ContactUtil.ContactViewHolder contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
-                    //int position  =   mFirebaseAdapter.getAdapterPosition();
-                    String uid = mFirebaseAdapter.getRef(contactViewHolder.getLayoutPosition()).getKey();
+                    contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
+                    uid = mFirebaseAdapter.getRef(contactViewHolder.getLayoutPosition()).getKey();
                     Log.d(TAG, uid);
-                    Intent i = new Intent(getApplicationContext(), ContactDetailActivity.class);
+                    i = new Intent(getApplicationContext(), ContactDetailActivity.class);
                     i.putExtra("UID", uid);
 
                     startActivityForResult(i, REQUEST_CONTACT_DETAIL);
+                    break;
+
+                case R.id.startChat:
+                    contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
+                    uid = contactViewHolder.getUid();
+                    Log.d(TAG, "UID IS : " + uid );
+                    String name2 = (String) contactViewHolder.name.getText();
+                    String threadKey = PrivateChatUtil.setupPrivateChat(mAuth.getCurrentUser().getUid(), uid, mAuth.getCurrentUser().getDisplayName(), name2);
+                    i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.putExtra("THREAD", threadKey);
+                    i.putExtra("LABEL", name2);
+                    i.putExtra("MODE", true);
+                    startActivityForResult(i, REQUEST_PRIVATE_THREAD);
+                    break;
+                case R.id.deleteContact:
+                    contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
+                    uid = contactViewHolder.getUid();
+                    mFirebaseDatabaseReference.child("users").child(mAuth.getCurrentUser().getUid()).child("contacts").child(uid).removeValue();
                     break;
                 default:
                     Log.d(TAG, "Unrecognized click");

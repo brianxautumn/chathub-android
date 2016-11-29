@@ -52,7 +52,9 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
     static final int REQUEST_PUBLIC_THREAD = 1;
     static final int REQUEST_PRIVATE_THREAD = 2;
     static final int REQUEST_CONTACTS = 3;
+    public static final int REQUEST_PREFERENCES = 4;
     private GoogleApiClient mGoogleApiClient;
+    private int mSavedTheme;
 
     // Firebase instance variables
     private FirebaseAuth mAuth;
@@ -132,7 +134,11 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
                         startActivity(new Intent(getApplicationContext(), SignInActivity.class));
                         return true;
                         //break;
-
+                    case R.id.preferences:
+                        mSavedTheme = DesignUtils.getPreferredTheme(getApplicationContext());
+                        i = new Intent(getApplicationContext(), PreferencesActivity.class);
+                        startActivityForResult(i, REQUEST_PREFERENCES);
+                        break;
                     default:
                         txt = "Invalid Item Selected";
                 }

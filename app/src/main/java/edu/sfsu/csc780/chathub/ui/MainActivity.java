@@ -644,6 +644,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         User newContact = new User(name, email);
+                        newContact.setUid(uid);
                         mFirebaseDatabaseReference.child("users").child(mUser.getUid()).child("contacts").child(uid).setValue(newContact);
 
                         Context context = getApplicationContext();

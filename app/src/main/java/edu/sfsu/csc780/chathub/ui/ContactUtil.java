@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class ContactUtil {
     public static class ContactViewHolder extends RecyclerView.ViewHolder{
         public TextView name;
         public TextView email;
+        public String uid;
         public View contactLayout;
         private SwipeLayout layout;
 
@@ -48,13 +50,24 @@ public class ContactUtil {
             //v.setTag(this);
             itemView.findViewById(R.id.contactDetails).setTag(this);
             itemView.findViewById(R.id.deleteContact).setOnClickListener(sContactClickListener);
+            itemView.findViewById(R.id.deleteContact).setTag(this);
             itemView.findViewById(R.id.startChat).setOnClickListener(sContactClickListener);
+            itemView.findViewById(R.id.startChat).setTag(this);
             //layout.setShowMode(SwipeLayout.ShowMode.LayDown);
             //layout.addDrag(SwipeLayout.DragEdge.Right, layout.findViewWithTag("Bottom2"));
 
             name = (TextView) itemView.findViewById(R.id.contactName);
             email = (TextView) itemView.findViewById(R.id.contactEmail) ;
             contactLayout = itemView.findViewById(R.id.contactLayout);
+        }
+
+        public void setUid(String uid){
+
+            this.uid = uid;
+        }
+
+        public String getUid(){
+            return this.uid;
         }
 
 
@@ -90,6 +103,8 @@ public class ContactUtil {
                 //Log.d("FirebaseTest" , key);
                 viewHolder.name.setText(user.getName());
                 viewHolder.email.setText(user.getEmail());
+                Log.d(TAG, "SETTING UID ad :" + user.getUid());
+                viewHolder.setUid(user.getUid());
                 sAdapterListener.onLoadComplete();
             }
 
