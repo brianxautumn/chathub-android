@@ -48,6 +48,7 @@ public class ContactActivity extends AppCompatActivity implements ContactUtil.Th
 
         mContactRecyclerView = (RecyclerView) findViewById(R.id.contactRecyclerView);
 
+
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(false);
         mContactRecyclerView.setLayoutManager(mLinearLayoutManager);

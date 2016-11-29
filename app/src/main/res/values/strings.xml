@@ -20,5 +20,6 @@
     <string name="preferences">Preferences</string>
     <string name="inbox">Inbox</string>
     <string name="account">Account</string>
+    <string name="startChat">Message</string>
 
 </resources>

@@ -153,7 +153,7 @@ public class SignInActivity extends AppCompatActivity implements
                             mFirebaseDatabaseReference.child("users").child(firebaseUser.getUid()).child("name").setValue(firebaseUser.getDisplayName());
                             mFirebaseDatabaseReference.child("users").child(firebaseUser.getUid()).child("email").setValue(firebaseUser.getEmail());
                             mFirebaseDatabaseReference.child("users").child(firebaseUser.getUid()).child("photoUrl").setValue(firebaseUser.getPhotoUrl().toString());
-                            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                            startActivity(new Intent(SignInActivity.this, MessageThreadActivity.class));
                             finish();
 
                             /*

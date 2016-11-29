@@ -1,11 +1,14 @@
 package edu.sfsu.csc780.chathub.ui;
 
+import android.os.Debug;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,9 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import edu.sfsu.csc780.chathub.R;
+import edu.sfsu.csc780.chathub.model.PrivateThread;
 import edu.sfsu.csc780.chathub.model.User;
 
-public class ContactDetailActivity extends AppCompatActivity {
+public class ContactDetailActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar mToolBar;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -30,6 +34,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private TextView mContactName;
     private TextView mContactEmail;
     public ImageView mContactImage;
+    private Button mStartChatButton;
 
     private FirebaseUser firebaseContact;
     public static final String TAG = "ContactActivity";
@@ -64,6 +69,8 @@ public class ContactDetailActivity extends AppCompatActivity {
         mContactName =(TextView) findViewById(R.id.contactName);
         mContactEmail =(TextView) findViewById(R.id.contactEmail);
         mContactImage = (ImageView) findViewById(R.id.contactImage);
+        mStartChatButton = (Button) findViewById(R.id.startChat);
+        mStartChatButton.setOnClickListener(this);
 
 
 
@@ -94,4 +101,21 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.startChat:
+                Log.d(TAG, "Should start chat");
+                String name2 = (String) mContactName.getText();//TODO:: could be better, maybe use tag
+                PrivateChatUtil.setupPrivateChat(mAuth.getCurrentUser().getUid(), uid, mAuth.getCurrentUser().getDisplayName(), name2);
+                break;
+            default:
+                //do nothing
+                break;
+        }
+    }
+
 }

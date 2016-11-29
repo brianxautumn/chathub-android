@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +39,7 @@ public class ContactUtil {
         public TextView name;
         public TextView email;
         public View contactLayout;
+        private SwipeLayout layout;
 
         public ContactViewHolder(View v) {
             super(v);
