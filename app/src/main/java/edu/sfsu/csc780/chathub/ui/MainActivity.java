@@ -42,6 +42,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity
     private String threadKey;
     private String threadLabel;
     private String mUserUid;
+    private Toolbar mToolBar;
     private DataSnapshot contactSnapshot;
 
     @Override
@@ -139,12 +141,21 @@ public class MainActivity extends AppCompatActivity
             //The key argument here must match that used in the other activity
         }
 
-        setTitle(threadLabel);
+
 
         Log.d(TAG , "MODE IS : " + isPrivate + "");
 
         DesignUtils.applyColorfulTheme(this);
         setContentView(R.layout.activity_main);
+
+        //Setup toolbar
+        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setTitle(threadLabel);
+
+
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         // Set default username is anonymous.
         mUsername = ANONYMOUS;
@@ -328,6 +339,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /*
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
@@ -351,6 +372,7 @@ public class MainActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
         }
     }
+    */
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
