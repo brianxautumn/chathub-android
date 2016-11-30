@@ -31,7 +31,11 @@
         </activity>
         <activity android:name=".ui.ContactActivity" />
         <activity android:name=".ui.ContactDetailActivity" />
-        <activity android:name=".ui.InboxActivity"></activity>
+        <activity android:name=".ui.InboxActivity" />
+
+        <service
+            android:name=".service.PrivateMessagingService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

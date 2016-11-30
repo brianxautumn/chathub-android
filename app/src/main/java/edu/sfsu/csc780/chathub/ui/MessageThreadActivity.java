@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import edu.sfsu.csc780.chathub.R;
 import edu.sfsu.csc780.chathub.model.ChatMessage;
 import edu.sfsu.csc780.chathub.model.ChatThread;
+import edu.sfsu.csc780.chathub.service.PrivateMessagingService;
 import edu.sfsu.csc780.chathub.ui.SignInActivity;
 
 public class MessageThreadActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ThreadUtil.ThreadLoadListener {
@@ -83,6 +84,9 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
         } else {
             mUsername = mUser.getDisplayName();
 
+            //Start message listener here!
+            Intent privateMessageListenerIntent = new Intent(this, PrivateMessagingService.class);
+            startService(privateMessageListenerIntent);
         }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -132,6 +136,7 @@ public class MessageThreadActivity extends AppCompatActivity implements GoogleAp
                         mAuth.signOut();
                         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
                         mUsername = ANONYMOUS;
+                        stopService(new Intent(getApplicationContext(), PrivateMessagingService.class));
                         startActivity(new Intent(getApplicationContext(), SignInActivity.class));
                         return true;
                         //break;

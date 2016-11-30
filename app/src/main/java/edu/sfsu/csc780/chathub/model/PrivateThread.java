@@ -5,27 +5,40 @@ package edu.sfsu.csc780.chathub.model;
  */
 public class PrivateThread {
 
-    //String user1;
-    //String user2;
-    //String name1;
-    //String name2;
-    User user1;
-    User user2;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    String name;
+    String uid;
+    String message;
+    String photoUrl;
+    String email;
 
     public PrivateThread(){
 
     }
 
-    public PrivateThread(User user1, User user2){
-        this.user1 = user1;
-        this.user2 = user2;
-        //this.name1 = name1;
-        //this.name2 = name2;
+
+    public String getName(){
+        return this.name;
     }
 
-    //Temporary
-    public String getContactName(){
-        return "test";
-    }
 
 }

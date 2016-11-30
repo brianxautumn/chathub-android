@@ -33,8 +33,18 @@ public class PrivateChatUtil {
         sFirebaseDatabaseReference.child("private-messages").child(combinedPrivateThreadKey).child("to-user").setValue(toUser);
         sFirebaseDatabaseReference.child("private-messages").child(combinedPrivateThreadKey).child("from-user").setValue(fromUser);
 
-        sFirebaseDatabaseReference.child("users").child(fromUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("contact").setValue(toUser);
-        sFirebaseDatabaseReference.child("users").child(toUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("contact").setValue(fromUser);
+        //Have to flatten data, not sure why embeded objects dont work...
+        sFirebaseDatabaseReference.child("users").child(fromUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("name").setValue(toUser.getName());
+        sFirebaseDatabaseReference.child("users").child(fromUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("uid").setValue(toUser.getUid());
+        sFirebaseDatabaseReference.child("users").child(fromUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("email").setValue(toUser.getEmail());
+        sFirebaseDatabaseReference.child("users").child(fromUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("photoUrl").setValue(toUser.getPhotoUrl());
+
+        sFirebaseDatabaseReference.child("users").child(toUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("name").setValue(fromUser.getName());
+        sFirebaseDatabaseReference.child("users").child(toUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("uid").setValue(fromUser.getUid());
+        sFirebaseDatabaseReference.child("users").child(toUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("email").setValue(fromUser.getEmail());
+        sFirebaseDatabaseReference.child("users").child(toUser.getUid()).child("chats").child(combinedPrivateThreadKey).child("photoUrl").setValue(fromUser.getPhotoUrl());
+
+
 
         return combinedPrivateThreadKey;
     }

@@ -87,7 +87,7 @@ public class InboxUtil {
 
                 //final String key = this.getRef(position).getKey();
                 //Log.d("FirebaseTest" , key);
-                viewHolder.contactName.setText(chatThread.getContactName());
+                viewHolder.contactName.setText(chatThread.getName());
                 //viewHolder.setThreadKey(this.getRef(position).getKey());
                 sAdapterListener.onLoadComplete();
             }
