@@ -5,6 +5,13 @@ package edu.sfsu.csc780.chathub.model;
  */
 public class PrivateThread {
 
+    String name;
+    String uid;
+    String message;
+    String photoUrl;
+    String email;
+    long timestamp;
+
     public void setName(String name) {
         this.name = name;
     }
@@ -25,11 +32,19 @@ public class PrivateThread {
         this.email = email;
     }
 
-    String name;
-    String uid;
-    String message;
-    String photoUrl;
-    String email;
+    public String getMessage() {
+        return message;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+
 
     public PrivateThread(){
 

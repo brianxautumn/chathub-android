@@ -41,6 +41,7 @@ public class MessageUtil {
     private static final String LOG_TAG = MessageUtil.class.getSimpleName();
     public static final String MESSAGES_CHILD = "messages";
     public static final String THREAD_KEY = "threads";
+    private static final String TAG = "MessageUtil";
     private static DatabaseReference sFirebaseDatabaseReference =
             FirebaseDatabase.getInstance().getReference();
     private static FirebaseStorage sStorage = FirebaseStorage.getInstance();
@@ -85,9 +86,14 @@ public class MessageUtil {
         final String threadId = chatMessage.getThreadId();
         //final int messageCount = 0;
 
-        Log.d("messagePushing" , threadId);
+
         sFirebaseDatabaseReference.child("private-messages").child(threadId).child("messages").push().setValue(chatMessage);
-        //sFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(chatMessage);
+        String recieverUid = PrivateChatUtil.getReceiverUid(chatMessage.getUid(), threadId);
+
+        //Now we must push the message preview to the other user
+        sFirebaseDatabaseReference.child("users").child(recieverUid).child("chats").child(threadId).child("message").setValue(chatMessage.getText());
+        sFirebaseDatabaseReference.child("users").child(recieverUid).child("chats").child(threadId).child("timestamp").setValue(chatMessage.getTimestamp());
+        Log.d(TAG, recieverUid);
     }
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {

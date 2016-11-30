@@ -22,11 +22,12 @@ public class PrivateChatUtil {
         //String uid1, String uid2, String name1, String name2
 
         //PrivateThread privateThread = new PrivateThread(fromUser, toUser);
-        int compare = fromUser.getUid().compareTo(toUser.getUid());
-        String combinedPrivateThreadKey = fromUser.getUid() + toUser.getUid();
-        if (compare > 0) {
-            combinedPrivateThreadKey = toUser.getUid() + fromUser.getUid();
-        }
+        //int compare = fromUser.getUid().compareTo(toUser.getUid());
+        String combinedPrivateThreadKey = generatePrivateChatKey(fromUser.getUid(), toUser.getUid());
+                //= fromUser.getUid() + toUser.getUid();
+       /// if (compare > 0) {
+          //  combinedPrivateThreadKey = toUser.getUid() + fromUser.getUid();
+        //}
 
         //Make an extra reference to avoid having to do complicated lookups since restricted to json
         //Also avoid overwrites if already exists
@@ -47,6 +48,24 @@ public class PrivateChatUtil {
 
 
         return combinedPrivateThreadKey;
+    }
+
+    public static String generatePrivateChatKey(String uid1, String uid2){
+        int compare = uid1.compareTo(uid2);
+        String combinedPrivateThreadKey = uid1 + uid2;
+        if (compare > 0) {
+            combinedPrivateThreadKey = uid2 + uid1;
+        }
+
+        return combinedPrivateThreadKey;
+    }
+
+    public static String getReceiverUid(String myUid, String threadKey){
+        String firstUser = threadKey.substring(0, 28);
+        if(myUid.equals(firstUser)){
+            return threadKey.substring(28, 56);
+        }
+        return firstUser;
     }
 
 

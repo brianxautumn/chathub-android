@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +24,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+
 import edu.sfsu.csc780.chathub.R;
+import edu.sfsu.csc780.chathub.model.ChatMessage;
+import edu.sfsu.csc780.chathub.model.ChatThread;
+import edu.sfsu.csc780.chathub.model.PrivateThread;
 import edu.sfsu.csc780.chathub.ui.InboxActivity;
 import edu.sfsu.csc780.chathub.ui.InboxUtil;
 
@@ -35,6 +41,7 @@ public class PrivateMessagingService extends Service {
     private FirebaseUser mUser;
     private DatabaseReference mFirebaseDatabaseReference;
     private DatabaseReference mActiveThreads;
+    private long startTime;
 
 
     @Override
@@ -43,6 +50,7 @@ public class PrivateMessagingService extends Service {
         //Initialize Auth
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        startTime = new Date().getTime();
 
 
         //Now set up a listener for the user's contacts
@@ -55,7 +63,26 @@ public class PrivateMessagingService extends Service {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                createNotification();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+
+                     DatabaseReference chatRef = postSnapshot.getRef();
+                        chatRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            PrivateThread threadData = dataSnapshot.getValue(PrivateThread.class);
+                            if(threadData.getTimestamp() > startTime){
+                                createNotification(threadData.getMessage(), threadData.getName());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+                //createNotification(post.getMessage(), "test");
             }
 
             @Override
@@ -74,13 +101,13 @@ public class PrivateMessagingService extends Service {
         return null;
     }
 
-    private void createNotification(){
+    private void createNotification(String message, String name){
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_message_white_24px)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!")
+                        .setContentTitle(name)
+                        .setContentText(message)
                         .setLights(Color.BLUE, 500, 500)
                         .setStyle(new NotificationCompat.InboxStyle())
                         .setSound(alarmSound);
