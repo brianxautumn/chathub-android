@@ -124,12 +124,14 @@ public class MessageUtil {
         String name;
         String email;
         String uid;
+        String photoUrl;
 
 
-        public MessageMeta(String name, String email, String uid){
+        public MessageMeta(String name, String email, String uid, String photoUrl){
             this.name = name;
             this.email = email;
             this.uid = uid;
+            this.photoUrl = photoUrl;
         }
     }
 
@@ -167,7 +169,7 @@ public class MessageUtil {
                 sAdapterListener.onLoadComplete();
                 viewHolder.messageTextView.setText(chatMessage.getText());
                 viewHolder.messengerTextView.setText(chatMessage.getName());
-                viewHolder.messageLayout.setTag(new MessageMeta(chatMessage.getName(), chatMessage.getEmail(), chatMessage.getUid()));
+                viewHolder.messageLayout.setTag(new MessageMeta(chatMessage.getName(), chatMessage.getEmail(), chatMessage.getUid(), chatMessage.getPhotoUrl()));
 
                 //viewHolder.setUserUid(chatMessage.getUid());
                 //viewHolder.setName(chatMessage.getText());

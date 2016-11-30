@@ -32,6 +32,8 @@ public class ContactDetailActivity extends AppCompatActivity implements View.OnC
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private String uid;
+    private String email;
+    private String photoUrl;
     private TextView mContactName;
     private TextView mContactEmail;
     public ImageView mContactImage;
@@ -53,6 +55,7 @@ public class ContactDetailActivity extends AppCompatActivity implements View.OnC
         setContentView(R.layout.activity_contact_detail);
         setTitle(getString(R.string.contact_detail));
         mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
 
 
         Bundle extras = getIntent().getExtras();
@@ -85,10 +88,13 @@ public class ContactDetailActivity extends AppCompatActivity implements View.OnC
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Post post = dataSnapshot.getValue(Post.class);
                 mContactName.setText(dataSnapshot.child("name").getValue(String.class));
-                mContactEmail.setText(dataSnapshot.child("email").getValue(String.class));
+                email = dataSnapshot.child("email").getValue(String.class);
+                mContactEmail.setText(email);
                 //mContactImage.set
                 //Log.d(TAG, dataSnapshot.child("photoUrl").getValue(String.class));
-                String photoUrl = dataSnapshot.child("photoUrl").getValue(String.class);
+                photoUrl = dataSnapshot.child("photoUrl").getValue(String.class);
+                uid = dataSnapshot.child("uid").getValue(String.class);
+
                 Picasso.with(getApplicationContext()).load(photoUrl).into(mContactImage);
             }
 
@@ -116,7 +122,9 @@ public class ContactDetailActivity extends AppCompatActivity implements View.OnC
             case R.id.startChat:
                 Log.d(TAG, "Should start chat");
                 String name2 = (String) mContactName.getText();//TODO:: could be better, maybe use tag
-                String threadKey = PrivateChatUtil.setupPrivateChat(mAuth.getCurrentUser().getUid(), uid, mAuth.getCurrentUser().getDisplayName(), name2);
+                User fromUser = new User(mUser.getDisplayName(), mUser.getEmail(), mUser.getPhotoUrl().toString(), mUser.getUid());
+                User toUser = new User(name2, email, photoUrl, uid);
+                String threadKey = PrivateChatUtil.setupPrivateChat(fromUser, toUser);
 
                 //Now launch the chat activity
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);

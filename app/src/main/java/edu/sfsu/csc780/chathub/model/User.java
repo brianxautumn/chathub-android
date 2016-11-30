@@ -28,6 +28,14 @@ public class User {
         this.photoUrl = photoUrl;
     }
 
+    public User(String name, String email, String photoUrl, String uid){
+        this.name = name;
+        this.email = email;
+        this.photoUrl = photoUrl;
+        this.uid = uid;
+    }
+
+
     public void setPhotoUrl(String photoUrl){
         this.photoUrl = photoUrl;
     }

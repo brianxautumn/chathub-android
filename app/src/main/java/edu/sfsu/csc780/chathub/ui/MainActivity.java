@@ -607,13 +607,15 @@ public class MainActivity extends AppCompatActivity
             String name =  messageMeta.name;
             String uid = messageMeta.uid;
             String email = messageMeta.email;
+            String photoUrl = messageMeta.photoUrl;
+            User newContact = new User(name, email, photoUrl, uid);
             final FirebaseUser firebaseUser = mAuth.getCurrentUser();
             Log.d(TAG, uid);
             Log.d(TAG, firebaseUser.getUid());
             if(uid.equals(firebaseUser.getUid())){
                 showSelfDetails(name);
             }else{
-                showContactAddDialog(name, uid, email);
+                showContactAddDialog(newContact);
             }
 
             return false;
@@ -636,19 +638,19 @@ public class MainActivity extends AppCompatActivity
         alert.show();
     }
 
-    void showContactAddDialog(final String name, final String uid, final String email){
+    void showContactAddDialog(final User newContact){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Add " + name + " to contacts?")
+        builder.setMessage("Add " + newContact.getName() + " to contacts?")
 
                 .setCancelable(false)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        User newContact = new User(name, email);
-                        newContact.setUid(uid);
-                        mFirebaseDatabaseReference.child("users").child(mUser.getUid()).child("contacts").child(uid).setValue(newContact);
+                        //User newContact = new User(name, email);
+                        //newContact.setUid(uid);
+                        mFirebaseDatabaseReference.child("users").child(mUser.getUid()).child("contacts").child(newContact.getUid()).setValue(newContact);
 
                         Context context = getApplicationContext();
-                        CharSequence text = "Added " + name + " to contacts.";
+                        CharSequence text = "Added " + newContact.getName() + " to contacts.";
                         int duration = Toast.LENGTH_LONG;
 
                         Toast toast = Toast.makeText(context, text, duration);

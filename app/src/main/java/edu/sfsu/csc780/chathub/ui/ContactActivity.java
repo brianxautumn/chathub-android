@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import edu.sfsu.csc780.chathub.R;
+import edu.sfsu.csc780.chathub.model.User;
 
 public class ContactActivity extends AppCompatActivity implements ContactUtil.ThreadLoadListener {
 
@@ -101,9 +102,13 @@ public class ContactActivity extends AppCompatActivity implements ContactUtil.Th
                 case R.id.startChat:
                     contactViewHolder = (ContactUtil.ContactViewHolder) v.getTag();
                     uid = contactViewHolder.getUid();
-                    Log.d(TAG, "UID IS : " + uid );
+                    Log.d(TAG, "UID IS : " + uid);
                     String name2 = (String) contactViewHolder.name.getText();
-                    String threadKey = PrivateChatUtil.setupPrivateChat(mAuth.getCurrentUser().getUid(), uid, mAuth.getCurrentUser().getDisplayName(), name2);
+                    String email = (String) contactViewHolder.email.getText();
+                    String photoUrl = (String) contactViewHolder.getPhotoUrl();
+                    User fromUser = new User(mUser.getDisplayName(), mUser.getEmail(), mUser.getPhotoUrl().toString(), mUser.getUid());
+                    User toUser = new User(name2, email, photoUrl, uid);
+                    String threadKey = PrivateChatUtil.setupPrivateChat(fromUser, toUser);
                     i = new Intent(getApplicationContext(), MainActivity.class);
                     i.putExtra("THREAD", threadKey);
                     i.putExtra("LABEL", name2);

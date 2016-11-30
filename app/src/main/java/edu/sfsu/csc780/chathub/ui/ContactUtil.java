@@ -42,12 +42,12 @@ public class ContactUtil {
         public String uid;
         public View contactLayout;
         private SwipeLayout layout;
+        public String photoUrl;
 
         public ContactViewHolder(View v) {
             super(v);
-            //v.setOnClickListener(sContactClickListener);
+
             itemView.findViewById(R.id.contactDetails).setOnClickListener(sContactClickListener);
-            //v.setTag(this);
             itemView.findViewById(R.id.contactDetails).setTag(this);
             itemView.findViewById(R.id.deleteContact).setOnClickListener(sContactClickListener);
             itemView.findViewById(R.id.deleteContact).setTag(this);
@@ -61,6 +61,10 @@ public class ContactUtil {
             contactLayout = itemView.findViewById(R.id.contactLayout);
         }
 
+        public void setPhotoUrl(String photoUrl){
+            this.photoUrl = photoUrl;
+        }
+
         public void setUid(String uid){
 
             this.uid = uid;
@@ -68,6 +72,10 @@ public class ContactUtil {
 
         public String getUid(){
             return this.uid;
+        }
+
+        public String getPhotoUrl(){
+            return this.photoUrl;
         }
 
 
@@ -100,11 +108,10 @@ public class ContactUtil {
 
 
 
-                //Log.d("FirebaseTest" , key);
                 viewHolder.name.setText(user.getName());
                 viewHolder.email.setText(user.getEmail());
-                Log.d(TAG, "SETTING UID ad :" + user.getUid());
                 viewHolder.setUid(user.getUid());
+                viewHolder.setPhotoUrl(user.getPhotoUrl());
                 sAdapterListener.onLoadComplete();
             }
 
@@ -119,6 +126,10 @@ public class ContactUtil {
         });
 
         return adapter;
+    }
+
+    public static void addContact(User user){
+
     }
 
 }
